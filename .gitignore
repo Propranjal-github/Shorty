@@ -1,0 +1,30 @@
+# Environments
+backend/.env
+frontend/.env
+*.db
+*.sqlite*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+frontend/dist/
+*.local
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/

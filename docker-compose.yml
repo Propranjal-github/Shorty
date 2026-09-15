@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    # Container listens on 8080 (entrypoint default); expose it on host :8000.
+    ports:
+      - "8000:8080"
+    environment:
+      SHORTY_BASE_URL: http://localhost:8000
+      SHORTY_DATABASE_URL: sqlite:////app/data/shorty.db
+      SHORTY_MACHINE_ID: 1
+      SHORTY_AUTO_CREATE_TABLES: "true"
+    volumes:
+      - backend-data:/app/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    environment:
+      BACKEND_URL: http://backend:8080
+    depends_on:
+      - backend
+
+volumes:
+  backend-data:

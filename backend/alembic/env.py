@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
+from app import models  # noqa: F401  registers all ORM models on Base.metadata
 
 # Import the app's settings, declarative base, and models so the metadata the
 # migrations operate against is fully populated.
 from app.config import settings
 from app.database import Base
-from app import models  # noqa: F401  registers all ORM models on Base.metadata
 
 config = context.config
 

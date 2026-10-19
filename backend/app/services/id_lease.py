@@ -10,7 +10,7 @@ from app.core.id_generator import MAX_MACHINE_ID
 from app.core.time import utcnow
 from app.models import MachineIdLease
 
-LEASE_TTL_SECONDS = 600
+LEASE_TTL_SECONDS = 3600
 
 
 def lease_machine_id(db: Session, *, ttl_seconds: int = LEASE_TTL_SECONDS) -> int:

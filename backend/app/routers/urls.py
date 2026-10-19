@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, status
@@ -17,6 +18,10 @@ router = APIRouter(tags=["urls"])
 DbSession = Annotated[Session, Depends(get_db)]
 ServiceDep = Annotated[URLService, Depends(get_url_service)]
 Throttle = Annotated[None, Depends(rate_limit)]
+
+# Valid short codes are 1–16 base62 characters.  Rejecting anything else avoids
+# a DB round-trip for bot/crawler noise (favicon.ico, robots.txt, .env, …).
+_VALID_CODE = re.compile(r"^[a-zA-Z0-9]{1,16}$")
 
 
 def _client_ip(request: Request) -> str | None:
@@ -81,6 +86,8 @@ def redirect(
     db: DbSession,
     service: ServiceDep,
 ) -> RedirectResponse:
+    if not _VALID_CODE.match(short_code):
+        raise NotFoundError(f"no URL for code {short_code!r}")
     original = service.resolve(db, short_code)
     if original is None:
         raise NotFoundError(f"no URL for code {short_code!r}")
@@ -91,3 +98,4 @@ def redirect(
         user_agent=request.headers.get("user-agent"),
     )
     return RedirectResponse(url=original, status_code=status.HTTP_302_FOUND)
+
